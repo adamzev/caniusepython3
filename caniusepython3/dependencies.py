@@ -66,16 +66,12 @@ def dependencies(project_name):
 
 def blockers(project_names, index_url=pypi.PYPI_INDEX_URL):
     log = logging.getLogger('ciu')
-    overrides = pypi.manual_overrides()
 
     def supports_py3(project_name):
-        if project_name in overrides:
-            return True
-        else:
-            return pypi.supports_py3(project_name, index_url=index_url)
+        return pypi.supports_py3(project_name, index_url=index_url)
 
     check = []
-    evaluated = set(overrides)
+    evaluated = set()
     for project in project_names:
         log.info('Checking top-level project: {0} ...'.format(project))
         evaluated.add(project)
