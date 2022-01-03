@@ -45,36 +45,6 @@ def just_name(supposed_name):
     return PROJECT_NAME.match(supposed_name).group(0).lower()
 
 
-def manual_overrides():
-    """Read the overrides file.
-
-    Read the overrides from cache, if available. Otherwise, an attempt is made
-    to read the file as it currently stands on GitHub, and then only if that
-    fails is the included file used. The result is cached for one day.
-    """
-    return _manual_overrides(datetime.date.today())
-
-
-@lru_cache(maxsize=1)
-def _manual_overrides(_cache_date=None):
-    """Read the overrides file.
-
-    An attempt is made to read the file as it currently stands on GitHub, and
-    then only if that fails is the included file used.
-    """
-    log = logging.getLogger('ciu')
-    request = requests.get("https://raw.githubusercontent.com/brettcannon/"
-                           "caniusepython3/master/caniusepython3/overrides.json")
-    if request.status_code == 200:
-        log.info("Overrides loaded from GitHub and cached")
-        overrides = request.json()
-    else:
-        log.info("Overrides loaded from included package data and cached")
-        raw_bytes = pkgutil.get_data(__name__, 'overrides.json')
-        overrides = json.loads(raw_bytes.decode('utf-8'))
-    return frozenset(map(packaging.utils.canonicalize_name, overrides.keys()))
-
-
 def supports_py3(project_name, index_url=PYPI_INDEX_URL):
     """Check with PyPI if a project supports Python 3."""
     log = logging.getLogger("ciu")
@@ -86,5 +56,5 @@ def supports_py3(project_name, index_url=PYPI_INDEX_URL):
                         project_name, request.status_code))
         return True
     response = request.json()
-    return any(c.startswith("Programming Language :: Python :: 3")
+    return any(c.startswith("Programming Language :: Python :: 3.10")
                for c in response["info"]["classifiers"])
