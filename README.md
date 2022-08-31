@@ -1,4 +1,9 @@
-** NOTE ** This project is no longer actively developed!
+# Can I Use Python 3.x
+
+I forked this library and modfied the code to check which libraries support 3.10. I may modify it again if I need to check support for a version again in the future.
+
+
+** NOTE ** The base project is no longer actively developed!
 
 # Can I Use Python 3?
 
